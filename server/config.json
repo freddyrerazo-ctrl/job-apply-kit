@@ -1,0 +1,10 @@
+{
+  "sources": {
+    "greenhouse": ["stripe", "figma"],
+    "lever": ["plaid"],
+    "ashby": ["ramp"]
+  },
+  "keywords_include": ["engineer", "developer"],
+  "keywords_exclude": ["staff", "principal", "director"],
+  "locations": ["remote", "atlanta"]
+}
