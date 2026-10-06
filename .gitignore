@@ -1,0 +1,14 @@
+# Your own working data
+applications.xlsx
+~$*.xlsx
+*.local.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
