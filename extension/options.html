@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Job Apply Kit — Settings</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  body { background: var(--wash); font-size: 14px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .lede { color: var(--muted); margin-bottom: 22px; }
+  section {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 20px 20px; margin-bottom: 16px;
+  }
+  h2 { font-size: 15px; margin-bottom: 4px; }
+  section > p { color: var(--muted); font-size: 13px; margin-bottom: 14px; max-width: 62ch; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .grid .wide { grid-column: 1 / -1; }
+  label { font-size: 13px; }
+  label .opt { font-weight: 400; color: var(--muted); }
+  input[type=text], input[type=url], input[type=email], input[type=number], textarea {
+    padding: 7px 9px;
+  }
+  textarea { min-height: 70px; line-height: 1.45; }
+  #r-message { min-height: 230px; }
+  .steps { margin: 0 0 14px 20px; padding: 0; font-size: 13px; }
+  .steps li { margin-bottom: 8px; padding-left: 2px; max-width: 64ch; }
+  .steps .btn { margin: 0 2px; }
+  kbd {
+    font: 12px ui-monospace, Menlo, Consolas, monospace; background: var(--wash);
+    border: 1px solid var(--line); border-radius: 4px; padding: 0 4px;
+    white-space: nowrap;
+  }
+  .linkline { display: flex; gap: 8px; }
+  .linkline input { flex: 1; }
+  #sheet-result { margin-top: 12px; font-size: 13px; }
+  #sheet-result .card {
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-top: 8px;
+  }
+  #sheet-result .card b { display: block; margin-bottom: 2px; }
+  #sheet-result .cols { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .msg { padding: 8px 10px; border-radius: 6px; }
+  .msg.good { color: var(--accent); background: var(--accent-soft); }
+  .msg.bad { color: var(--bad); background: var(--bad-soft); }
+  .msg.warn { color: var(--warn); background: var(--warn-soft); margin-top: 6px; }
+  .answer { display: grid; grid-template-columns: 1fr 1.4fr auto; gap: 8px; margin-bottom: 8px; }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+  .check input { margin-top: 3px; accent-color: var(--accent); }
+  .tokens { font: 12px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+  #saved {
+    position: fixed; right: 20px; bottom: 20px; background: var(--ink); color: #fff;
+    border-radius: 7px; padding: 7px 12px; font-size: 12px; opacity: 0; transition: opacity .2s;
+  }
+  #saved.show { opacity: 1; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .answer { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Job Apply Kit settings</h1>
+  <p class="lede">Everything here is stored in this browser. Changes save as you type.</p>
+
+  <section id="sheet">
+    <h2>Google Sheet link</h2>
+    <p>Both live in <a id="open-apps-sheet" href="#" target="_blank" rel="noopener">your
+      job-search spreadsheet</a>: applications go to your tracker tab, and referrals go to a
+      tab named “Referral Apps”. If that tab isn't there yet, it's added the first time the
+      link is tested. Setting this up takes about two minutes, once.</p>
+    <label for="sheet-link">Your spreadsheet's link</label>
+    <input id="sheet-link" type="url" spellcheck="false"
+      placeholder="https://docs.google.com/spreadsheets/d/…/edit">
+    <div class="note" style="margin: 6px 0 14px">Open your job-search spreadsheet and copy the
+      address from the browser bar. It's written into the script when you copy it in step 1.</div>
+    <ol class="steps">
+      <li><button class="btn sm" id="copy-script" type="button">Copy the script</button>
+        (a small script that runs inside your own Google account).
+        <span class="note" id="copy-note"></span></li>
+      <li><a href="https://script.new" target="_blank" rel="noopener">Open a new Apps Script project</a>
+        (script.new). It's separate from any script already attached to your sheet, which is
+        left alone.</li>
+      <li>Delete the few lines in the editor, paste, and click the save icon.</li>
+      <li>Click <kbd>Deploy</kbd> → <kbd>New deployment</kbd>. Click the gear and pick
+        <kbd>Web app</kbd>. Set <b>Execute as: Me</b> and <b>Who has access: Anyone</b>,
+        then <kbd>Deploy</kbd>.</li>
+      <li>Click <kbd>Authorize access</kbd> and pick your account. Google warns that
+        the app isn't verified, because it's your own script: choose
+        <kbd>Advanced</kbd> → <kbd>Go to … (unsafe)</kbd> → <kbd>Allow</kbd>.</li>
+      <li>Copy the <b>Web app URL</b> it shows and paste it below.</li>
+    </ol>
+    <label for="sheet-url">Web app URL</label>
+    <div class="linkline">
+      <input id="sheet-url" type="url" spellcheck="false"
+        placeholder="https://script.google.com/macros/s/…/exec">
+      <button class="btn primary" id="sheet-test" type="button">Save and test</button>
+    </div>
+    <div class="note" style="margin-top:6px">Treat this link like a password: anyone who has it
+      can read and add rows in these two tabs.</div>
+    <div id="sheet-result" aria-live="polite"></div>
+  </section>
+
+  <section>
+    <h2>Resume link</h2>
+    <p>Added to every full referral message as “Resume: link”. Upload your resume to
+      Google Drive, set sharing to “Anyone with the link”, and paste the link.</p>
+    <label for="p-resume_url">Link to your resume</label>
+    <input id="p-resume_url" type="url" spellcheck="false" placeholder="https://drive.google.com/file/d/…/view">
+  </section>
+
+  <section>
+    <h2>About you</h2>
+    <p>Used by <b>Fill this page</b> on job applications. Anything left blank is
+      skipped, so the form's field stays empty for you to answer.</p>
+    <div class="grid" id="profile-grid"></div>
+  </section>
+
+  <section>
+    <h2>When you log an application</h2>
+    <p>Extra columns your tracker has. Each is only written if the tracker has a
+      column for it.</p>
+    <div class="grid">
+      <div>
+        <label for="app-status">Status to record <span class="opt">(Application Status)</span></label>
+        <input id="app-status" type="text" placeholder="Applied">
+      </div>
+      <div>
+        <label for="app-login-note">Login to record <span class="opt">(Login Information)</span></label>
+        <input id="app-login-note" type="text" spellcheck="false" placeholder="e.g. the email you sign up with">
+      </div>
+      <div class="wide note">If the status column is a dropdown, the option that matches is
+        picked for you. Leave either box blank to fill that column in yourself. The login can
+        be changed per application in the popup; passwords are best kept out of a spreadsheet.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Answers to questions you keep getting</h2>
+    <p>When an application question contains any of your words, <b>Fill this page</b>
+      enters your answer. Separate several words with commas. Yes/No answers tick
+      the matching choice.</p>
+    <div id="answers"></div>
+    <button class="btn" id="answer-add" type="button">Add an answer</button>
+  </section>
+
+  <section>
+    <h2>Referral message wording</h2>
+    <p>The message is built from these. Words in braces are filled in for you.</p>
+    <div class="grid">
+      <div class="wide">
+        <label for="r-headline">Who you are <span class="opt">(finishes the sentence “I'm [your name], …”)</span></label>
+        <input id="r-headline" type="text">
+      </div>
+      <div class="wide">
+        <label for="r-pitch">One line of proof <span class="opt">(from your resume)</span></label>
+        <textarea id="r-pitch"></textarea>
+      </div>
+      <div class="wide">
+        <label for="r-message">Full message</label>
+        <textarea id="r-message" spellcheck="true"></textarea>
+      </div>
+      <div class="wide">
+        <label for="r-note">Connection note <span class="opt">(short version)</span></label>
+        <textarea id="r-note" spellcheck="true"></textarea>
+      </div>
+      <div>
+        <label for="r-note_limit">Connection note limit <span class="opt">(200 free, 300 Premium)</span></label>
+        <input id="r-note_limit" type="number" min="50" max="1000">
+      </div>
+      <div>
+        <label for="follow-days">Suggest a follow-up after <span class="opt">(days)</span></label>
+        <input id="follow-days" type="number" min="1" max="60">
+      </div>
+      <div class="wide">
+        <label for="r-followup">Follow-up message</label>
+        <textarea id="r-followup" spellcheck="true"></textarea>
+      </div>
+      <div class="wide tokens">{name} {me} {full_name} {headline} {pitch} {position} {company} {resume_line} {job_line}</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>LinkedIn profiles</h2>
+    <label class="check" for="read-linkedin">
+      <input id="read-linkedin" type="checkbox">
+      <span>When I open the popup on someone's profile, read their name and current
+        company from that page.</span>
+    </label>
+    <p style="margin: 10px 0 0 24px">It reads only the profile you have open, only when you
+      open the popup, and changes or sends nothing. LinkedIn's terms are written broadly
+      against extensions that copy profile details, so turn this off if you'd rather not;
+      the name is then taken from the tab title and you type the company.</p>
+  </section>
+</div>
+<div id="saved" role="status">Saved</div>
+<script src="common.js"></script>
+<script src="options.js"></script>
+</body>
+</html>

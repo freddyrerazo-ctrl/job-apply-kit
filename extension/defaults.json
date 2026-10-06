@@ -1,0 +1,35 @@
+{
+  "sheetUrl": "",
+  "applicationsSheet": "",
+  "readLinkedIn": true,
+  "followUpDays": 7,
+  "applicationStatus": "Applied",
+  "loginNote": "",
+  "profile": {
+    "first_name": "",
+    "last_name": "",
+    "full_name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "linkedin": "",
+    "github": "",
+    "website": "",
+    "current_company": "",
+    "current_title": "",
+    "years_experience": "",
+    "work_authorized": "",
+    "needs_sponsorship": "",
+    "how_heard": "",
+    "resume_url": ""
+  },
+  "referral": {
+    "note_limit": 200,
+    "headline": "",
+    "pitch": "",
+    "note": "Hi {name}, I'm {me}. I'm applying for the {position} role at {company}. Would you be open to referring me?",
+    "message": "Hi {name},\n\nI'm {me}, {headline}. I'm applying for the {position} role at {company} and wanted to ask whether you'd be open to referring me.\n\n{pitch}\n\n{resume_line}\n{job_line}\n\nNo pressure at all if it's not a fit. Thank you for your time!\n\n{full_name}",
+    "followup": "Hi {name}, just following up on my note about the {position} role at {company}. I'd really appreciate a referral if you're open to it, and no worries at all if not. Thanks again!"
+  },
+  "answers": []
+}

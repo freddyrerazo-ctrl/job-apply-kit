@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Job Apply Kit</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  body { width: 380px; }
+  header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 14px 16px 10px; border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 14px; font-weight: 700; letter-spacing: .01em; }
+  #sheet-state {
+    border: 0; background: none; padding: 0; cursor: pointer;
+    font: 11px ui-monospace, Menlo, Consolas, monospace; color: var(--muted);
+  }
+  #sheet-state.on { color: var(--accent); }
+  #sheet-state.bad { color: var(--bad); }
+  #sheet-state:hover { text-decoration: underline; }
+  nav { display: flex; border-bottom: 1px solid var(--line); }
+  nav button {
+    flex: 1; padding: 9px 0; background: none; border: 0; cursor: pointer;
+    font-weight: 600; font-size: 12px; color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+  nav button.active { color: var(--ink); border-bottom-color: var(--accent); }
+  nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  main { max-height: 440px; overflow-y: auto; }
+  [hidden] { display: none !important; }
+
+  .form { display: grid; gap: 10px; padding: 12px 16px 14px; }
+  .pair.solo { grid-template-columns: 1fr; }
+  .form-foot { display: flex; gap: 8px; align-items: flex-start; }
+  .form-foot .note { flex: 1; min-width: 0; padding-top: 2px; }
+  #ref-text { height: 112px; }
+  #ref-count { font: 11px ui-monospace, Menlo, Consolas, monospace; }
+  #ref-count.over { color: var(--bad); font-weight: 700; }
+  .banner {
+    padding: 6px 9px; border-radius: 6px; font-size: 12px;
+    color: var(--warn); background: var(--warn-soft);
+  }
+  .linkrow { font-size: 12px; }
+
+  .list-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 16px; background: var(--wash);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    font-size: 12px; font-weight: 600;
+  }
+  .list-head a { font-weight: 400; }
+  .row {
+    display: flex; gap: 10px; align-items: center;
+    padding: 9px 16px; border-bottom: 1px solid var(--line);
+  }
+  .row .meta { flex: 1; min-width: 0; }
+  .row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .title .thin { font-weight: 400; }
+  .row .title a { color: inherit; text-decoration: none; }
+  .row .title a:hover { color: var(--accent); text-decoration: underline; }
+  .row .sub {
+    color: var(--muted); font-size: 12px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .row .acts { display: flex; gap: 6px; align-items: center; }
+  .row select { width: auto; padding: 3px 4px; font-size: 11px; }
+  .row.saving { opacity: .6; }
+  .row.failed .sub { color: var(--bad); white-space: normal; }
+  .empty { padding: 22px 20px; color: var(--muted); text-align: center; }
+  .empty .btn { margin-top: 10px; }
+
+  footer {
+    display: flex; gap: 8px; padding: 12px 16px;
+    border-top: 1px solid var(--line); background: var(--wash);
+  }
+  footer #fill { flex: 1; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Job Apply Kit</h1>
+    <button id="sheet-state" type="button" title="Open Settings">sheet: not linked</button>
+  </header>
+
+  <nav>
+    <button id="tab-apps" type="button">Applications</button>
+    <button id="tab-refs" type="button">Referrals</button>
+  </nav>
+
+  <main>
+    <!-- ============================ Applications ======================= -->
+    <section id="view-apps" hidden>
+      <form class="form" id="app-form" autocomplete="off">
+        <div class="pair">
+          <div>
+            <label for="app-company">Company</label>
+            <input id="app-company" type="text" placeholder="e.g. Acme">
+          </div>
+          <div>
+            <label for="app-position">Position</label>
+            <input id="app-position" type="text" placeholder="e.g. Data Analyst">
+          </div>
+        </div>
+        <div class="pair">
+          <div>
+            <label for="app-location">Location</label>
+            <input id="app-location" type="text" placeholder="e.g. Atlanta, GA">
+          </div>
+          <div>
+            <label for="app-date">Date submitted</label>
+            <input id="app-date" type="date">
+          </div>
+        </div>
+        <div class="pair solo" id="app-extra">
+          <div>
+            <label for="app-notes">Notes <span class="opt">(optional)</span></label>
+            <input id="app-notes" type="text" maxlength="500"
+              placeholder="e.g. applied through a recruiter, follow up Friday">
+          </div>
+          <div id="app-login-wrap" hidden>
+            <label for="app-login">Login used <span class="opt">(optional)</span></label>
+            <input id="app-login" type="text" maxlength="120" placeholder="e.g. your email">
+          </div>
+        </div>
+        <div class="note" id="app-notes-hint" hidden></div>
+        <div class="form-foot">
+          <div class="note" id="app-hint"></div>
+          <button class="btn primary" id="app-add" type="submit">Add to sheet</button>
+        </div>
+      </form>
+      <div class="list-head">
+        <span id="app-count">Applications</span>
+        <a id="app-open" href="#" hidden>Open sheet</a>
+      </div>
+      <div id="app-list"></div>
+    </section>
+
+    <!-- ============================== Referrals ======================== -->
+    <section id="view-refs" hidden>
+      <div class="form" style="padding-bottom: 10px">
+        <div class="seg" role="group" aria-label="Referrals view">
+          <button id="ref-v-write" type="button">Write a message</button>
+          <button id="ref-v-list" type="button">People messaged</button>
+        </div>
+      </div>
+
+      <div id="ref-write" hidden>
+        <div class="form" style="padding-top: 0">
+          <div class="banner" id="ref-dupe" hidden></div>
+          <div class="pair">
+            <div>
+              <label for="ref-first">First name</label>
+              <input id="ref-first" type="text" autocomplete="off" placeholder="e.g. Ana">
+            </div>
+            <div>
+              <label for="ref-last">Last name</label>
+              <input id="ref-last" type="text" autocomplete="off" placeholder="e.g. Smith">
+            </div>
+          </div>
+          <div class="pair">
+            <div>
+              <label for="ref-company">Company they work for</label>
+              <input id="ref-company" type="text" autocomplete="off" placeholder="e.g. Acme">
+            </div>
+            <div>
+              <label for="ref-position">Position you want</label>
+              <input id="ref-position" type="text" list="ref-jobs" autocomplete="off"
+                placeholder="e.g. Data Analyst">
+              <datalist id="ref-jobs"></datalist>
+            </div>
+          </div>
+          <div class="note" id="ref-found"></div>
+          <div class="seg" role="group" aria-label="Message length">
+            <button id="ref-mode-full" type="button">Full message</button>
+            <button id="ref-mode-note" type="button">Connection note</button>
+          </div>
+          <textarea id="ref-text" aria-label="Referral message"></textarea>
+          <div class="form-foot">
+            <div class="note"><span id="ref-count"></span> <span id="ref-hint"></span></div>
+            <button class="btn" id="ref-copy" type="button">Copy</button>
+            <button class="btn primary" id="ref-log" type="button">Copy + log</button>
+          </div>
+          <div class="linkrow"><a id="ref-find" href="#">Find people on LinkedIn</a></div>
+        </div>
+      </div>
+
+      <div id="ref-people" hidden>
+        <div class="list-head">
+          <span id="ref-total">People messaged</span>
+          <a id="ref-open" href="#" hidden>Open sheet</a>
+        </div>
+        <div id="ref-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <button class="btn primary" id="fill" type="button">Fill this page</button>
+    <button class="btn" id="finder" type="button">Job finder</button>
+    <button class="btn" id="settings" type="button">Settings</button>
+  </footer>
+  <div id="toast" role="status"></div>
+
+  <script src="common.js"></script>
+  <script src="detect.js"></script>
+  <script src="referral.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

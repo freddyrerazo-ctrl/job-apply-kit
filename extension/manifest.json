@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Job Apply Kit",
+  "version": "2.0.0",
+  "description": "Log applications and referral messages to Google Sheets, draft referral requests, and pre-fill application forms.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://script.google.com/*",
+    "https://script.googleusercontent.com/*",
+    "http://127.0.0.1:8377/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Job Apply Kit"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://boards.greenhouse.io/*",
+        "https://job-boards.greenhouse.io/*",
+        "https://jobs.lever.co/*",
+        "https://jobs.ashbyhq.com/*",
+        "https://apply.workable.com/*",
+        "https://jobs.smartrecruiters.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
